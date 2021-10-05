@@ -1,0 +1,32 @@
+name "bindbc-nodave"
+description "Dynamic and static bindings to Nodave, compatible with -betterC, @nogc, and nothrow."
+homepage ""
+authors "Orfeo Da Vià"
+license "Boost"
+
+targetType "staticLibrary"
+targetPath "lib"
+targetName "BindBC_Nodave"
+
+configuration "dynamic" {
+    versions "BindNodave_Dynamic"
+    dependency "bindbc-loader" version="~>1.0.0"
+}
+
+configuration "dynamicBC" {
+    versions "BindNodave_Dynamic"
+    dependency "bindbc-loader" version="~>1.0.0"
+    subConfiguration "bindbc-loader" "yesBC"
+    dflags "-betterC"
+}
+
+configuration "static" {
+    versions "BindNodave_Static"
+    excludedSourceFiles "source/bindbc/nodave/binddynamic.d"
+}
+
+configuration "staticBC" {
+    dflags "-betterC"
+    versions "BindNodave_Static"
+    excludedSourceFiles "source/bindbc/nodave/binddynamic.d"
+}
