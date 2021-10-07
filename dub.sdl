@@ -6,7 +6,7 @@ license "Boost"
 
 targetType "staticLibrary"
 targetPath "lib"
-targetName "BindBC_Nodave"
+targetName "bindbc-nodave"
 
 configuration "dynamic" {
     versions "BindNodave_Dynamic"
@@ -22,11 +22,11 @@ configuration "dynamicBC" {
 
 configuration "static" {
     versions "BindNodave_Static"
-    excludedSourceFiles "source/bindbc/nodave/binddynamic.d"
+    excludedSourceFiles "src/bindbc/nodave/binddynamic.d"
 }
 
 configuration "staticBC" {
     dflags "-betterC"
     versions "BindNodave_Static"
-    excludedSourceFiles "source/bindbc/nodave/binddynamic.d"
+    excludedSourceFiles "src/bindbc/nodave/binddynamic.d"
 }
