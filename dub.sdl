@@ -10,12 +10,12 @@ targetName "bindbc-nodave"
 
 configuration "dynamic" {
     versions "BindNodave_Dynamic"
-    dependency "bindbc-loader" version="~>1.0.0"
+    dependency "bindbc-loader" version="~>1.0.1"
 }
 
 configuration "dynamicBC" {
     versions "BindNodave_Dynamic"
-    dependency "bindbc-loader" version="~>1.0.0"
+    dependency "bindbc-loader" version="~>1.0.1"
     subConfiguration "bindbc-loader" "yesBC"
     dflags "-betterC"
 }

@@ -1,22 +1,22 @@
 module bindbc.nodave.types;
 
 enum NodaveSupport {
-    noLibrary,
-    badLibrary,
-    nodave84      = 84,
+   noLibrary,
+   badLibrary,
+   //version 0.8.5.1
+   nodave851 = 851,
 }
 
 enum NODAVE_VERSION_MAJOR = 0;
 
-version(NODAVE_84) {
-    enum NODAVE_VERSION_MINOR = 8;
-    enum NODAVE_VERSION_REVISION = 4;
-    enum nodaveSupport = NodaveSupport.nodave84;
-}
-else {
-    enum NODAVE_VERSION_MINOR = 8;
-    enum NODAVE_VERSION_REVISION = 4;
-    enum nodaveSupport = NodaveSupport.nodave84;
+version (NODAVE_851) {
+   enum NODAVE_VERSION_MINOR = 8;
+   enum NODAVE_VERSION_REVISION = 5;
+   enum nodaveSupport = NodaveSupport.nodave851;
+} else {
+   enum NODAVE_VERSION_MINOR = 8;
+   enum NODAVE_VERSION_REVISION = 5;
+   enum nodaveSupport = NodaveSupport.nodave851;
 }
 
 enum daveProtoISOTCP = 122; /** ISO over TCP */
@@ -89,6 +89,7 @@ struct daveInterface {
 /**
  * A structure representing the physical connection to a single PLC.
  * daveConnection stores all properties that are unique to a single PLC:
+ *
  * $(LIST
  *   * The MPI address of this PLC.
  *   * The rack the PLC is in.
@@ -121,4 +122,3 @@ struct daveResultSet {
    int numResults;
    daveResult* results;
 }
-

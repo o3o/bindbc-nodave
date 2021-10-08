@@ -1,0 +1,12 @@
+name "read_int32_cli"
+description "bindbc int32 read/write example"
+authors "Orfeo Da Vià"
+
+copyright "Copyright © 2021, o3o"
+license "LGPL v3.0.0"
+dependency "bindbc-nodave" path="../../"
+targetType "executable"
+
+configuration "dynamic" {
+    versions "NODAVE_851" "BindNodave_Dynamic"
+}
