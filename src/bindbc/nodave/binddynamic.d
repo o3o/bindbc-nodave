@@ -17,7 +17,6 @@ import bindbc.loader;
 import bindbc.nodave.types;
 
 extern (C) @nogc nothrow {
-   alias pglfwInit = int function();
    alias pdaveGetS8from = int function(ubyte* b);
    alias pdaveGetU8from = int function(ubyte* b);
    alias pdaveGetS16from = int function(ubyte* b);
@@ -370,8 +369,6 @@ NodaveSupport loadNodave() {
 
    NodaveSupport ret;
    foreach (name; libNames) {
-      import std.stdio;
-      writeln(name);
       ret = loadNodave(name.ptr);
       if (ret != NodaveSupport.noLibrary) {
          break;
@@ -381,9 +378,6 @@ NodaveSupport loadNodave() {
 }
 
 NodaveSupport loadNodave(const(char)* libName) {
-   import std.stdio;
-   writeln(libName);
-
    lib = load(libName);
    if (lib == invalidHandle) {
       return NodaveSupport.noLibrary;

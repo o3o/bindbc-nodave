@@ -3,7 +3,6 @@
  */
 module bindbc.nodave.bufferappender;
 
-import bindbc.nodave;
 import std.array : Appender, appender;
 
 alias DaveBuffer = Appender!(ubyte[]);
@@ -42,6 +41,7 @@ unittest {
  * Converts short `value` into bytes and appends it to the managed array.
  */
 Appender!(ubyte[]) put16(Appender!(ubyte[]) app, in int value) {
+   import bindbc.nodave : davePut16;
    ubyte[] buffer = new ubyte[](2);
    davePut16(buffer.ptr, value);
    app.put(buffer);
@@ -55,7 +55,7 @@ unittest {
    app.put16(2018);
    app.put16(1971);
    assert(app.data.length == 8);
-   assert(app.data == [0x00, 0x2a, 0x07, 0xac, 0x07, 0xe2, 0x07, 0xb3,]);
+   assert(app.data == [0x00, 0x2a, 0x07, 0xac, 0x07, 0xe2, 0x07, 0xb3]);
 }
 unittest {
    auto app = appender!(ubyte[]);
@@ -97,6 +97,8 @@ unittest {
  * Converts int `value` into bytes and appends it to the managed array.
  */
 Appender!(ubyte[]) put32(Appender!(ubyte[]) app, in int value) {
+   import bindbc.nodave : davePut32;
+
    ubyte[] buffer = new ubyte[](4);
    davePut32(buffer.ptr, value);
    app.put(buffer);
@@ -122,6 +124,7 @@ unittest {
  * Converts float `value` into bytes and appends it to the managed array.
  */
 Appender!(ubyte[]) putFloat(Appender!(ubyte[]) app, in float value) {
+   import bindbc.nodave : davePutFloat;
 
    ubyte[] buffer = new ubyte[](4);
    davePutFloat(buffer.ptr, value);
