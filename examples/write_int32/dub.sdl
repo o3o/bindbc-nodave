@@ -1,0 +1,12 @@
+name "write_int"
+description "dinodave integer read/write example"
+authors "Orfeo Da Viá"
+
+copyright "Copyright © 2017, o3o"
+license "LGPL v3.0.0"
+dependency "bindbc-nodave" path="../../"
+targetType "executable"
+
+configuration "dynamic" {
+    versions "NODAVE_851" "BindNodave_Dynamic"
+}

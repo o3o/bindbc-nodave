@@ -6,9 +6,15 @@
 module bindbc.nodave;
 
 public import bindbc.nodave.types;
+public import bindbc.nodave.util;
+public import bindbc.nodave.bufferappender;
 
-version (BindBC_Static) version = BindNodave_Static;
-version (BindNodave_Static)
+version (BindBC_Static) {
+   version = BindNodave_Static;
+}
+
+version (BindNodave_Static) {
    public import bindbc.nodave.bindstatic;
-else
+} else {
    public import bindbc.nodave.binddynamic;
+}

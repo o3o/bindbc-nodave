@@ -7,7 +7,9 @@ module bindbc.nodave.binddynamic;
 
 version (BindBC_Static) {
 } else version (BindNodave_Static) {
-} else version = BindNodave_Dynamic;
+} else {
+   version = BindNodave_Dynamic;
+}
 
 version (BindNodave_Dynamic)  :
 
@@ -247,6 +249,21 @@ __gshared {
    pdaveGetFloatAt daveGetFloatAt;
    pdaveSetBit daveSetBit;
    pdaveClrBit daveClrBit;
+/**
+    * Read len bytes from the PLC.
+    *
+    * Params:
+    *  dc = A daveConnection
+    *  area = Denotes whether the data comes from FLAGS, DATA BLOCKS,
+    *  DB = The number of the data block to be used. Set it to zero
+    *  start = First byte.
+    *  len = Number of bytes to read
+    *  buffer = Pointer to a memory block provided by the calling program.
+    *           If the pointer is not NULL, the result data will be copied thereto.
+    *           Hence it must be big enough to take up the result.
+    *
+    */
+
    pdaveReadBytes daveReadBytes;
    pdaveWriteBytes daveWriteBytes;
    pdaveReadPLCTime daveReadPLCTime;
