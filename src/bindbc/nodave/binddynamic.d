@@ -339,7 +339,7 @@ private {
    NodaveSupport loadedVersion;
 }
 
-// FIX: @nogc nothrow:
+@nogc nothrow:
 
 void unloadNodave() {
    if (lib != invalidHandle) {
