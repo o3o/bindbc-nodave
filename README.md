@@ -20,7 +20,7 @@ By default, bindbc-nodave is configured to compile as a dynamic binding that is 
 
 When using DUB to manage your project, the static binding can be enabled via a DUB `subConfiguration` statement in your project's package file.
 
-To use libnodave, add bindbc-glfw as a dependency to your project's package config file. For example, the following is configured to use libnodave as a dynamic binding that is not `-betterC` compatible:
+To use libnodave, add bindbc-nodave as a dependency to your project's package config file. For example, the following is configured to use libnodave as a dynamic binding that is not `-betterC` compatible:
 
 __dub.json__
 ```
@@ -36,7 +36,10 @@ dependency "bindbc-nodave" version="~>0.1.0"
 
 ### The dynamic binding
 The dynamic binding requires no special configuration when using DUB to manage your project.
-There is no link-time dependency. At runtime, the libnodave shared library is required to be on the shared library search path of the user's system. On Windows, this is typically handled by distributing the libnodave DLL with your program. On other systems, it usually means the user must install the libnodave runtime library through a package manager.
+There is no link-time dependency. 
+At runtime, the libnodave shared library is required to be on the shared library search path of the user's system. 
+On Windows, this is typically handled by distributing the libnodave DLL with your program. 
+On other systems, it usually means the user must install the libnodave runtime library through a package manager.
 
 To load the shared library, you need to call the `loadNodave` function.
 This returns a member of the `NodaveSupport` enumeration:
