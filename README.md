@@ -1,6 +1,18 @@
 # bindbc-nodave
 This project provides both static and dynamic bindings to [the libnodave library](http://libnodave.sourceforge.net/).
 
+## Documentation
+
+`bindbc-nodave` uses [adrdox](https://github.com/adamdruppe/adrdox) to generate it's documentation.
+To build your own copy, run the following command from the root of the expected repository:
+```
+path/to/adrdox/doc2 --genSearchIndex --genSource -o generated-docs source
+```
+or
+```
+path/to/adrdox/doc2 -i -u src
+```
+
 ## Usage
 __NOTE__: This documentation describes how to use bindbc-nodave. As the maintainer of this library, I do not provide instructions on using the libnodave library.
 
