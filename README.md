@@ -6,7 +6,7 @@ This project provides both static and dynamic bindings to [the libnodave library
 `bindbc-nodave` uses [adrdox](https://github.com/adamdruppe/adrdox) to generate it's documentation.
 To build your own copy, run the following command from the root of the expected repository:
 ```
-path/to/adrdox/doc2 --genSearchIndex --genSource -o generated-docs source
+path/to/adrdox/doc2 --genSearchIndex --genSource -o generated-docs src
 ```
 or
 ```
@@ -36,9 +36,9 @@ dependency "bindbc-nodave" version="~>0.1.0"
 
 ### The dynamic binding
 The dynamic binding requires no special configuration when using DUB to manage your project.
-There is no link-time dependency. 
-At runtime, the libnodave shared library is required to be on the shared library search path of the user's system. 
-On Windows, this is typically handled by distributing the libnodave DLL with your program. 
+There is no link-time dependency.
+At runtime, the libnodave shared library is required to be on the shared library search path of the user's system.
+On Windows, this is typically handled by distributing the libnodave DLL with your program.
 On other systems, it usually means the user must install the libnodave runtime library through a package manager.
 
 To load the shared library, you need to call the `loadNodave` function.
