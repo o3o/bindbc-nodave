@@ -65,12 +65,12 @@ void main(string[] args) {
                   daveDisconnectPLC(dc);
                   sock.close;
                }
-               enum BYTES_PER_INT = 4;
+               enum BYTES_PER_DINT = 4;
 
-               const(int) err = daveReadBytes(dc, daveDB, db, start, len * BYTES_PER_INT, null);
+               const(int) err = daveReadBytes(dc, daveDB, db, start, len * BYTES_PER_DINT, null);
                //s7.readBytes(db, start, len * BYTES_PER_INT);
                for (int i = 0; i < len; ++i) {
-                  print(db, start + i * BYTES_PER_INT, dc.daveGetU32);
+                  print(db, start + i * BYTES_PER_DINT, dc.daveGetU32);
                }
             }
          } catch(Exception e) {

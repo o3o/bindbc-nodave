@@ -7,6 +7,7 @@ module bindbc.nodave;
 
 public import bindbc.nodave.types;
 public import bindbc.nodave.util;
+public import bindbc.nodave.exception;
 public import bindbc.nodave.bufferappender;
 
 version (BindBC_Static) {
