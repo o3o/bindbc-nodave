@@ -43,6 +43,61 @@ enum daveTimer = 29; /** S7 timers */
 enum daveCounter200 = 30; /* IEC counters (200 family) */
 enum daveTimer200 = 31; /* IEC timers (200 family) */
 
+/*
+ *   Result codes. Generally, 0 means ok,
+ *   >0 are results (also errors) reported by the PLC
+ *   <0 means error reported by library code.
+*/
+
+/**
+ * Means all ok
+ */
+enum daveResOK = 0;
+/**
+ * CPU tells there is no peripheral at address
+ */
+enum daveResNoPeripheralAtAddress = 1;
+/**
+ * CPU tells it does not support to read a bit block with a length other than 1 bit.
+ */
+enum daveResMultipleBitsNotSupported = 6;
+/**
+ * Means a a piece of data is not available in the CPU, e.g.
+ *
+ * when trying to read a non existing DB or bit bloc of length<>1
+ * This code seems to be specific to 200 family.
+ */
+enum daveResItemNotAvailable200 = 3	;
+/**
+ * Means a a piece of data is not available in the CPU, e.g.
+ *  when trying to read a non existing DB
+ */
+enum daveResItemNotAvailable = 10		;
+/**
+ * Means the data address is beyond the CPUs address range
+ */
+enum daveAddressOutOfRange = 5			;
+/**
+ * Means the write data size doesn't fit item size
+ */
+enum daveWriteDataSizeMismatch = 7		;
+/** PDU is not understood by libnodave */
+enum daveResCannotEvaluatePDU = -123    	;
+enum daveResCPUNoData = -124;
+enum daveUnknownError = -125;
+enum daveEmptyResultError = -126;
+enum daveEmptyResultSetError = -127;
+enum daveResUnexpectedFunc = -128;
+enum daveResUnknownDataUnitSize = -129;
+enum daveResNoBuffer = -130;
+enum daveNotAvailableInS5 = -131;
+enum daveResInvalidLength = -132;
+enum daveResInvalidParam = -133;
+enum daveResNotYetImplemented = -134;
+enum daveResShortPacket = -1024;
+enum daveResTimeout = -1025;
+
+
 struct daveOSserialType {
    int rfd;
    int wfd;
