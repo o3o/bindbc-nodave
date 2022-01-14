@@ -40,27 +40,20 @@ unittest {
 /**
  * Converts short `value` into bytes and appends it to the managed array.
  */
-Appender!(ubyte[]) put16(Appender!(ubyte[]) app, in int value) {
-   import bindbc.nodave : davePut16;
-   ubyte[] buffer = new ubyte[](2);
-   davePut16(buffer.ptr, value);
-   app.put(buffer);
+Appender!(ubyte[]) put16(Appender!(ubyte[]) app, in short value) {
+   import std.bitmanip : nativeToBigEndian;
+
+   ubyte[2] buffer = nativeToBigEndian(value);
+   app.put(buffer.dup);
    return app;
 }
+
 ///
 unittest {
    auto app = appender!(ubyte[]);
    app.put16(42);
    app.put16(1964);
    app.put16(2018);
-   app.put16(1971);
-   assert(app.data.length == 8);
-   assert(app.data == [0x00, 0x2a, 0x07, 0xac, 0x07, 0xe2, 0x07, 0xb3]);
-}
-unittest {
-   auto app = appender!(ubyte[]);
-   app.put16(42);
-   app.put16(1964).put16(2018);
    app.put16(1971);
    assert(app.data.length == 8);
    assert(app.data == [0x00, 0x2a, 0x07, 0xac, 0x07, 0xe2, 0x07, 0xb3]);
@@ -89,7 +82,7 @@ unittest {
    bts(&r, 10);
    bts(&r, 0);
 
-   app.put16(cast(int)r);
+   app.put16(cast(short)r);
    assert(app.data == [0x07, 0x01]);
 }
 
@@ -97,11 +90,10 @@ unittest {
  * Converts int `value` into bytes and appends it to the managed array.
  */
 Appender!(ubyte[]) put32(Appender!(ubyte[]) app, in int value) {
-   import bindbc.nodave : davePut32;
+   import std.bitmanip : nativeToBigEndian;
 
-   ubyte[] buffer = new ubyte[](4);
-   davePut32(buffer.ptr, value);
-   app.put(buffer);
+   ubyte[4] buffer = nativeToBigEndian(value);
+   app.put(buffer.dup);
    return app;
 }
 
@@ -124,11 +116,10 @@ unittest {
  * Converts float `value` into bytes and appends it to the managed array.
  */
 Appender!(ubyte[]) putFloat(Appender!(ubyte[]) app, in float value) {
-   import bindbc.nodave : davePutFloat;
+   import std.bitmanip : nativeToBigEndian;
 
-   ubyte[] buffer = new ubyte[](4);
-   davePutFloat(buffer.ptr, value);
-   app.put(buffer);
+   ubyte[4] buffer = nativeToBigEndian(value);
+   app.put(buffer.dup);
    return app;
 }
 
