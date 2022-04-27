@@ -33,6 +33,7 @@ void main(string[] args) {
       int slot = 0;
       int port = 102;
       int func = 0;
+      double value = 0;
 
       auto opt = getopt(args,
             "ip", "Ip (172.20.0.10)", &ip,
@@ -40,7 +41,8 @@ void main(string[] args) {
             "d", "DB num (default 610)", &db,
             "s", "Start address (default 2)", &start,
             "l", "Number of element", &len,
-            "f", "Function ", &func
+            "f", "Function ", &func,
+            "a", "Argument/Value", &value
             );
       if (opt.helpWanted) {
          defaultGetoptPrinter("Read bytes from Siemens S7",
@@ -95,6 +97,15 @@ void main(string[] args) {
                         print(db, start + i * BYTES_PER_DINT, dc.daveGetU32);
                      }
                      break;
+                  case 5:
+                     // read float  (4 bytes)
+                     enum BYTES_PER_FLOAT = 4;
+                     const(int) err = daveReadBytes(dc, daveDB, db, start, len * BYTES_PER_FLOAT, null);
+                     for (int i = 0; i < len; ++i) {
+                        writefln("db%s.%s %f", db, start + i * BYTES_PER_FLOAT, dc.daveGetFloat);
+                     }
+                     break;
+
                  case 3:
                      enum BYTES_PER_LONG = 8;
                      // read a 64bit
@@ -142,7 +153,7 @@ void main(string[] args) {
                      string s = buf.getNTString();
                      writeln(s);
                      break;
-                 case 5:
+                 case 50:
                      // write and read a uint
                      uint V = 0x80402010;
                      ubyte[4] buf = nativeToBigEndian(V);
@@ -157,7 +168,7 @@ void main(string[] args) {
                      daveReadBytes(dc, daveDB, db, start, len, null);
                      writefln("%s %s", dc.daveGetU32, dc.daveGetS32);
                      break;
-                 case 6:
+                 case 60:
                      // write and read a float
                      enum float MIN = -42.0;
                      enum float MAX = 3.14;
@@ -191,6 +202,12 @@ void main(string[] args) {
                         }
                      }
                      break;
+                 case 9:
+                     // write short
+                     auto buf = appender!(ubyte[]);
+                     buf.put16(value.to!short);
+                     daveWriteBytes(dc, daveDB, db, start, 2, buf.data.ptr);
+                     break;
 
                   default:
                      assert(false);
@@ -204,7 +221,7 @@ void main(string[] args) {
 }
 
 void print(int db, int addr, uint i0) {
-   writefln("db%s.%s 0x%x", db, addr, i0);
+   writefln("db%s.%s 0x%x (%s)", db, addr, i0, i0);
 }
 void funcHelp() {
    writeln();
@@ -215,7 +232,12 @@ void funcHelp() {
    writeln("3: read long (8 bytes)");
    writeln("30: read long (8 bytes)");
    writeln("4: read string (max 1024 bytes)");
-   writeln("5: write/read uint (4 bytes)");
-   writeln("6: write/read 2 float (4 bytes)");
+   writeln("5: read `len` float (4 bytes)");
+   writeln("50: write/read uint (4 bytes)");
+   writeln("60: write 2 float (4 bytes)");
+   writeln("7: read `len` bytes");
+   writeln("8: read `len` bytes and print bits");
+   writeln("9: write ushort");
+   writeln("\t read_int32_cli --ip<IP> -d<DB> -s<ADDR> -f<FUNC> -a<value>");
 
 }

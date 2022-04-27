@@ -4,7 +4,8 @@ import std.socket : TcpSocket;
 import bindbc.nodave;
 
 /**
- * Creates a new daveConnection
+ * Creates a new daveConnection.
+ *
  * Params:
  *  sock = Tcp socket
  *  rack = The rack the CPU is mounted in (normally 0, only meaningful for ISO over TCP).
@@ -35,6 +36,7 @@ daveConnection* createConnection(TcpSocket sock, int rack = 0, int slot = 0) {
 
 /**
  * Write a sequence of bytes from a buffer to PLC memory, DB area.
+ *
  * Params:
  *  dc     = A pointer to a daveConnection structure representing an established connection.
  *  db     = The number of a data block.
@@ -50,6 +52,7 @@ in (db >= 0 && start >= 0 && len > 0)
 
 /**
  * Read a sequence of bytes from PLC memory, DB area.
+ *
  * Params:
  *  dc     = A pointer to a daveConnection structure representing an established connection.
  *  db     = The number of a data block.

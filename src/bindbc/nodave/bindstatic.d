@@ -1,4 +1,3 @@
-
 module bindbc.nodave.bindstatic;
 //          Copyright 2021 - 2024 Orfeo Da Vià
 // Distributed under the Boost Software License, Version 1.0.
@@ -13,43 +12,74 @@ version(BindNodave_Static):
 import bindbc.nodave.types;
 
 extern(C) @nogc nothrow {
+   ///
    int daveGetS8from(ubyte* b);
+   ///
    int daveGetU8from(ubyte* b);
+   ///
    int daveGetS16from(ubyte* b);
+   ///
    int daveGetU16from(ubyte* b);
+   ///
    int daveGetS32from(ubyte* b);
+   ///
    uint daveGetU32from(ubyte* b);
+   ///
    float daveGetFloatfrom(ubyte* b);
+   ///
 
    ubyte* davePut8(ubyte* b, int v);
+   ///
    ubyte* davePut16(ubyte* b, int v);
+   ///
    ubyte* davePut32(ubyte* b, int v);
+   ///
    ubyte* davePutFloat(ubyte* b, float v);
+   ///
    void davePut8At(ubyte* b, int pos, int v);
+   ///
    void davePut16At(ubyte* b, int pos, int v);
+   ///
    void davePut32At(ubyte* b, int pos, int v);
+   ///
    void davePutFloatAt(ubyte* b, int pos, float v);
-
+   ///
    ubyte daveToBCD(ubyte i);
+   ///
    ubyte daveFromBCD(ubyte i);
 
+   ///
    int daveGetS8(daveConnection* dc);
+   ///
    int daveGetU8(daveConnection* dc);
+   ///
    int daveGetS16(daveConnection* dc);
+   ///
    int daveGetU16(daveConnection* dc);
+   ///
    int daveGetS32(daveConnection* dc);
+   ///
    uint daveGetU32(daveConnection* dc);
+   ///
    float daveGetFloat(daveConnection* dc);
 
    int daveGetS8At(daveConnection* dc, int pos);
+   ///
    int daveGetU8At(daveConnection* dc, int pos);
+   ///
    int daveGetS16At(daveConnection* dc, int pos);
+   ///
    int daveGetU16At(daveConnection* dc, int pos);
+   ///
    int daveGetS32At(daveConnection* dc, int pos);
+   ///
    uint daveGetU32At(daveConnection* dc, int pos);
+   ///
    float daveGetFloatAt(daveConnection* dc, int pos);
 
+   ///
    int daveSetBit(daveConnection* dc, int area, int DB, int byteAdr, int bitAdr);
+   ///
    int daveClrBit(daveConnection* dc, int area, int DB, int byteAdr, int bitAdr);
 
    /**
@@ -72,7 +102,7 @@ extern(C) @nogc nothrow {
     *
     * Params:
     *  dc = A daveConnection
-    *  area = Denotes whether the data comes from FLAGS, DATA BLOCKS,  INPUTS or OUTPUTS. The writing of other data like timers and counters is not supported.
+    *  area = Denotes whether the data comes from FLAGS, DATA BLOCKS, INPUTS or OUTPUTS. The writing of other data like timers and counters is not supported.
     *  start = Determines the first byte
     *  DB = The number of the data block to be used. Set it to zero   for other area types.
     *  len = Number of bytes to write
@@ -83,12 +113,12 @@ extern(C) @nogc nothrow {
    int daveReadPLCTime(daveConnection* dc);
 
    /**
-    * Get time in seconds from current read position
+    * Get time in seconds from current read position.
     */
    float daveGetSeconds(daveConnection* dc);
 
    /**
-    * Get time in seconds from random position
+    * Get time in seconds from random position.
     *
     * Params:
     *  dc = a daveConnection

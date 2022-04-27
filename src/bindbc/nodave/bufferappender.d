@@ -9,6 +9,11 @@ alias DaveBuffer = Appender!(ubyte[]);
 
 /**
  * Appends byte to the managed array.
+ *
+ * Params:
+ *  app = Appender
+ *  value = Byte to append
+ *
  */
 Appender!(ubyte[]) put8(Appender!(ubyte[]) app, in ubyte value) {
    app.put(value);
@@ -102,13 +107,16 @@ unittest {
    app.put32(19641971);
    app.put32(19712004);
    app.put32(20072004);
-   assert(app.data.length == 12);
+   app.put32(1);
+   assert(app.data.length == 16);
 
    // dfmt off
    assert(app.data == [
          0x01, 0x2b, 0xb6, 0x73,
          0x01, 0x2c, 0xc8, 0x04,
-         0x01, 0x32, 0x46, 0x44]);
+         0x01, 0x32, 0x46, 0x44,
+         0x00, 0x0, 0x0, 0x1
+   ]);
    // dfmt on
 }
 
