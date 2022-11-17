@@ -1,5 +1,5 @@
-name "read_int32_cli"
-description "bindbc int32 read/write example"
+name "s7cli"
+description "S7 console interface"
 authors "Orfeo Da Vià"
 
 copyright "Copyright © 2021, o3o"
