@@ -53,36 +53,40 @@ enum daveTimer200 = 31; /* IEC timers (200 family) */
  * Means all ok
  */
 enum daveResOK = 0;
+
 /**
  * CPU tells there is no peripheral at address
  */
 enum daveResNoPeripheralAtAddress = 1;
+
 /**
  * CPU tells it does not support to read a bit block with a length other than 1 bit.
  */
 enum daveResMultipleBitsNotSupported = 6;
+
 /**
  * Means a a piece of data is not available in the CPU, e.g.
  *
  * when trying to read a non existing DB or bit bloc of length<>1
  * This code seems to be specific to 200 family.
  */
-enum daveResItemNotAvailable200 = 3	;
+enum daveResItemNotAvailable200 = 3;
+
 /**
  * Means a a piece of data is not available in the CPU, e.g.
  *  when trying to read a non existing DB
  */
-enum daveResItemNotAvailable = 10		;
+enum daveResItemNotAvailable = 10;
 /**
  * Means the data address is beyond the CPUs address range
  */
-enum daveAddressOutOfRange = 5			;
+enum daveAddressOutOfRange = 5;
 /**
  * Means the write data size doesn't fit item size
  */
-enum daveWriteDataSizeMismatch = 7		;
+enum daveWriteDataSizeMismatch = 7;
 /** PDU is not understood by libnodave */
-enum daveResCannotEvaluatePDU = -123    	;
+enum daveResCannotEvaluatePDU = -123;
 enum daveResCPUNoData = -124;
 enum daveUnknownError = -125;
 enum daveEmptyResultError = -126;
@@ -115,6 +119,7 @@ struct PDU {
 
 /**
  * A structure representing the physical connection to a PLC or a network of PLCs (e.g. like MPI).
+ *
  * daveInterface stores all those properties that are common to a network of PLCs:
  * $(LIST
  *   * The local address used by your computer.
@@ -143,13 +148,14 @@ struct daveInterface {
 
 /**
  * A structure representing the physical connection to a single PLC.
+ *
  * daveConnection stores all properties that are unique to a single PLC:
  *
  * $(LIST
  *   * The MPI address of this PLC.
  *   * The rack the PLC is in.
  *   * The slot the PLC is in.
- *   )
+ *  )
  */
 struct daveConnection {
    int AnswLen;

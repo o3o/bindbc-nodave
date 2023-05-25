@@ -56,10 +56,10 @@ Appender!(ubyte[]) put16(Appender!(ubyte[]) app, in short value) {
 ///
 unittest {
    auto app = appender!(ubyte[]);
-   app.put16(42);
-   app.put16(1964);
-   app.put16(2018);
-   app.put16(1971);
+   app.put16(0x2a);
+   app.put16(0x7ac);
+   app.put16(0x7e2);
+   app.put16(0x7b3);
    assert(app.data.length == 8);
    assert(app.data == [0x00, 0x2a, 0x07, 0xac, 0x07, 0xe2, 0x07, 0xb3]);
 }
@@ -101,7 +101,7 @@ Appender!(ubyte[]) put32(Appender!(ubyte[]) app, in int value) {
    app.put(buffer.dup);
    return app;
 }
-
+///
 unittest {
    auto app = appender!(ubyte[]);
    app.put32(19641971);
