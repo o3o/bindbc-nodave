@@ -15,7 +15,7 @@ alias DaveBuffer = Appender!(ubyte[]);
  *  value = Byte to append
  *
  */
-Appender!(ubyte[]) put8(Appender!(ubyte[]) app, in ubyte value) {
+DaveBuffer put8(DaveBuffer app, in ubyte value) {
    app.put(value);
    return app;
 }
@@ -42,13 +42,15 @@ unittest {
    assert(app.data == [10, 11, 12, 13]);
 }
 
+alias put16 = putW!short;
+alias putu16 = putW!ushort;
 /**
- * Converts short `value` into bytes and appends it to the managed array.
+ * Converts word `value` into bytes and appends it to the managed array.
  */
-Appender!(ubyte[]) put16(Appender!(ubyte[]) app, in short value) {
+DaveBuffer putW(T)(DaveBuffer app, in T value) if (is(T == short) || is(T == ushort)) {
    import std.bitmanip : nativeToBigEndian;
 
-   ubyte[2] buffer = nativeToBigEndian(value);
+   ubyte[2] buffer = nativeToBigEndian!T(value);
    app.put(buffer.dup);
    return app;
 }
@@ -62,6 +64,23 @@ unittest {
    app.put16(0x7b3);
    assert(app.data.length == 8);
    assert(app.data == [0x00, 0x2a, 0x07, 0xac, 0x07, 0xe2, 0x07, 0xb3]);
+
+   auto uapp = appender!(ubyte[]);
+   uapp.putu16(0x2a);
+   uapp.putu16(0x7ac);
+   uapp.putu16(0x7e2);
+   uapp.putu16(0x7b3);
+   assert(uapp.data.length == 8);
+   assert(uapp.data == [0x00, 0x2a, 0x07, 0xac, 0x07, 0xe2, 0x07, 0xb3]);
+
+}
+///
+unittest {
+   auto app = appender!(ubyte[]);
+   app.put16(-0x7ac);
+   app.putu16(0x7ac);
+   assert(app.data.length == 4);
+   assert(app.data == [0xf8, 0x54, 0x07, 0xac]);
 }
 
 unittest {
@@ -91,16 +110,19 @@ unittest {
    assert(app.data == [0x07, 0x01]);
 }
 
+alias put32 = putDW!int;
+alias putu32 = putDW!uint;
 /**
  * Converts int `value` into bytes and appends it to the managed array.
  */
-Appender!(ubyte[]) put32(Appender!(ubyte[]) app, in int value) {
+DaveBuffer putDW(T)(DaveBuffer app, in T value)  if (is(T == int) || is(T == uint)) {
    import std.bitmanip : nativeToBigEndian;
 
-   ubyte[4] buffer = nativeToBigEndian(value);
+   ubyte[4] buffer = nativeToBigEndian!T(value);
    app.put(buffer.dup);
    return app;
 }
+
 ///
 unittest {
    auto app = appender!(ubyte[]);
@@ -108,14 +130,16 @@ unittest {
    app.put32(19712004);
    app.put32(20072004);
    app.put32(1);
-   assert(app.data.length == 16);
+   app.put32(-1964);
+   assert(app.data.length == 20);
 
    // dfmt off
    assert(app.data == [
          0x01, 0x2b, 0xb6, 0x73,
          0x01, 0x2c, 0xc8, 0x04,
          0x01, 0x32, 0x46, 0x44,
-         0x00, 0x0, 0x0, 0x1
+         0x00, 0x0, 0x0, 0x1,
+         0xff, 0xff, 0xf8, 0x54,
    ]);
    // dfmt on
 }
@@ -123,7 +147,7 @@ unittest {
 /**
  * Converts float `value` into bytes and appends it to the managed array.
  */
-Appender!(ubyte[]) putFloat(Appender!(ubyte[]) app, in float value) {
+DaveBuffer putFloat(DaveBuffer app, in float value) {
    import std.bitmanip : nativeToBigEndian;
 
    ubyte[4] buffer = nativeToBigEndian(value);

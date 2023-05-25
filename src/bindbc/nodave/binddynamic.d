@@ -361,7 +361,6 @@ NodaveSupport loadNodave() {
    } else version (OSX) {
       const(char)[][1] libNames = ["libnodave.dylib",];
    } else version (Posix) {
-      pragma(msg, "lin");
       const(char)[][3] libNames = ["libnodave.so", "/usr/lib/libnodave.so", "/usr/local/lib/libnodave.so",];
    } else {
       static assert(0, "bindbc-nodave is not yet supported on this platform.");
