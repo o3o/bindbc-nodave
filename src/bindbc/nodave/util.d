@@ -12,7 +12,7 @@ import bindbc.nodave;
  *  slot = The rack the CPU is mounted in (normally 0, only meaningful for ISO over TCP).
  *
  */
-daveConnection* createConnection(TcpSocket sock, int rack = 0, int slot = 0) {
+daveConnection* createConnection(TcpSocket sock, int rack = 0, int slot = 0, int speed = daveSpeed9k) {
    enum int MPI = 0; //The address of the PLC (only meaningful for MPI and PPI).
    enum int RACK = 0; // The rack the CPU is mounted in (normally 0, only meaningful for ISO over TCP).
    enum int SLOT = 0;
@@ -22,7 +22,7 @@ daveConnection* createConnection(TcpSocket sock, int rack = 0, int slot = 0) {
    fds.wfd = fds.rfd;
 
    if (fds.rfd > 0) {
-      daveInterface* di = daveNewInterface(fds, "IF1", 0, daveProtoISOTCP, daveSpeed9k);
+      daveInterface* di = daveNewInterface(fds, "IF1", 0, daveProtoISOTCP, speed);
       daveSetTimeout(di, 5_000_000);
       daveConnection* dc = daveNewConnection(di, MPI, rack, slot);
       if (daveConnectPLC(dc) != 0) {

@@ -19,6 +19,7 @@ DaveBuffer put8(DaveBuffer app, in ubyte value) {
    app.put(value);
    return app;
 }
+
 ///
 unittest {
    auto app = appender!(ubyte[]);
@@ -29,7 +30,7 @@ unittest {
    assert(app.data.length == 4);
    assert(app.data == [10, 11, 12, 13]);
 }
-
+///
 unittest {
    auto app = appender!(ubyte[]);
    // dfmt off
@@ -45,7 +46,7 @@ unittest {
 alias put16 = putW!short;
 alias putu16 = putW!ushort;
 /**
- * Converts word `value` into bytes and appends it to the managed array.
+ * Converts word (16bit) `value` into bytes and appends it to the managed array.
  */
 DaveBuffer putW(T)(DaveBuffer app, in T value) if (is(T == short) || is(T == ushort)) {
    import std.bitmanip : nativeToBigEndian;
@@ -110,10 +111,15 @@ unittest {
    assert(app.data == [0x07, 0x01]);
 }
 
+
 alias put32 = putDW!int;
-alias putu32 = putDW!uint;
 /**
- * Converts int `value` into bytes and appends it to the managed array.
+ * Converts uint `value` into bytes and appends it to the managed array.
+ */
+alias putu32 = putDW!uint;
+
+/**
+ * Converts double word (32 bits) `value` into bytes and appends it to the managed array.
  */
 DaveBuffer putDW(T)(DaveBuffer app, in T value)  if (is(T == int) || is(T == uint)) {
    import std.bitmanip : nativeToBigEndian;
