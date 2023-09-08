@@ -9,9 +9,14 @@ import std.string : fromStringz;
 import std.socket;
 import core.bitop : bt;
 import std.array : appender;
+import std.datetime.stopwatch : StopWatch;
 
 void main(string[] args) {
    writeln("try load");
+   enum BYTES_PER_INT = 2;
+   enum BYTES_PER_DINT = 4;
+   enum BYTES_PER_LONG = 8;
+   enum BYTES_PER_FLOAT = 4;
 
    NodaveSupport retVal = loadNodave();
    info(loadedNodaveVersion);
@@ -32,6 +37,7 @@ void main(string[] args) {
       int len = 2;
       int slot = 0;
       int port = 102;
+      long duration = 5; // in secondi
       string cmd = "";
       string valueList = "";
 
@@ -40,8 +46,9 @@ void main(string[] args) {
             "slot", "Slot (default 0)", &slot,
             "d", "DB num (default 610)", &db,
             "s", "Start address (default 2)", &start,
-            "l", "Number of element", &len,
+            "l", "Number of element (see cmd)", &len,
             "c", "Command", &cmd,
+            "i", "Loop durarion (s)", &duration,
             "b", "Buffer", &valueList
             );
       if (opt.helpWanted) {
@@ -61,16 +68,22 @@ void main(string[] args) {
             }
 
             switch (cmd) {
+               case "ru8":
+                  // read bytes
+                  const(int) err = daveReadBytes(dc, daveDB, db, start, len, null);
+                  for (int i = 0; i < len; ++i) {
+                     writefln("db%s.%s 0x%x", db, i + start, dc.daveGetU8);
+                  }
+                  break;
                case "ru16":
                   // read len short (2 bytes)
-                  enum BYTES_PER_INT = 2;
                   dc.readBytes(db, start, len * BYTES_PER_INT);
                   for (int i = 0; i < len; ++i) {
                      print(db, start + i * BYTES_PER_INT, dc.daveGetU16);
                   }
                   break;
-               case "r1":
-                  // read 1 integer (2 bytes)
+               case "ru16n":
+                  // legge un intero 16 nativavmente
                   ubyte[2] buf;
                   const(int) err = daveReadBytes(dc, daveDB, db, start, 2 , buf.ptr);
                   writefln("%(0x%x %)", buf);
@@ -79,22 +92,12 @@ void main(string[] args) {
                   break;
                case "ru32":
                   // read len integer (4 bytes)
-                  enum BYTES_PER_DINT = 4;
                   const(int) err = daveReadBytes(dc, daveDB, db, start, len * BYTES_PER_DINT, null);
                   for (int i = 0; i < len; ++i) {
                      print(db, start + i * BYTES_PER_DINT, dc.daveGetU32);
                   }
                   break;
-               case "rf":
-                  // read float  (4 bytes)
-                  enum BYTES_PER_FLOAT = 4;
-                  const(int) err = daveReadBytes(dc, daveDB, db, start, len * BYTES_PER_FLOAT, null);
-                  for (int i = 0; i < len; ++i) {
-                     writefln("db%s.%s %f", db, start + i * BYTES_PER_FLOAT, dc.daveGetFloat);
-                  }
-                  break;
                case "ru64":
-                  enum BYTES_PER_LONG = 8;
                   // read a 64bit
                   ubyte[BYTES_PER_LONG] idBuffer;
 
@@ -106,110 +109,86 @@ void main(string[] args) {
                   ulong id = bigEndianToNative!ulong(idBuffer);
                   writeln(id);
                   break;
-                  /+
-               case 30:
-                     enum BYTES_PER_LONG = 8;
-                     // read a 64bit
-                     ubyte[BYTES_PER_LONG] idBuffer;
+               case "rf":
+                  // read float  (4 bytes)
+                  const(int) err = daveReadBytes(dc, daveDB, db, start, len * BYTES_PER_FLOAT, null);
+                  for (int i = 0; i < len; ++i) {
+                     writefln("db%s.%s %f", db, start + i * BYTES_PER_FLOAT, dc.daveGetFloat);
+                  }
+                  break;
 
-                     const(int) err = daveReadBytes(dc, daveDB, db, start, BYTES_PER_LONG, idBuffer.ptr);
-                     writefln("%(0x%x %)", idBuffer);
-
-                     ulong id = bigEndianToNative!ulong(idBuffer);
-                     writeln(id);
-                     break;
-                     +/
                case "rs":
-                        // read string
-                        ubyte[1024] buf;
-                        const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
-                        writefln("err %s", err);
-                        //writefln("%(0x%x %)", buf);
+                  // read string
+                  ubyte[1024] buf;
+                  const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
+                  writefln("err %s", err);
+                  //writefln("%(0x%x %)", buf);
 
-                        string s = buf.getNTString();
-                        writeln(s);
+                  string s = buf.getNTString();
+                  writeln(s);
 
-                        break;
+                  break;
                case "rs1":
-                        // read string
-                        ubyte[] buf; // NO, must be static array
-                        const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
-                        assert(err == 0);
-                        assert(buf.length == 0);
-                        writefln("err %s buf.len %s", err, buf.length);
+                  // read string
+                  ubyte[] buf; // NO, must be static array
+                  const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
+                  assert(err == 0);
+                  assert(buf.length == 0);
+                  writefln("err %s buf.len %s", err, buf.length);
 
-                        writefln("%(0x%x %)", buf);
-                        string s = buf.getNTString();
-                        writeln(s);
-                        break;
-                        /+
-               case 50:
-                           // write and read a uint
-                           uint V = 0x80402010;
-                           ubyte[4] buf = nativeToBigEndian(V);
-                           daveWriteBytes(dc, daveDB, db, start, 4, buf.ptr);
-
-                           ubyte[4] rep;
-                           const(int) err = daveReadBytes(dc, daveDB, db, start, len, rep.ptr);
-                           ubyte[] slice = rep.dup;
-                           uint u = slice.read!(uint, Endian.bigEndian)();
-                           writefln("0x%x", u);
-
-                           daveReadBytes(dc, daveDB, db, start, len, null);
-                           writefln("%s %s", dc.daveGetU32, dc.daveGetS32);
-                           break;
-               case 60:
-                           // write and read a float
-                           enum float MIN = -42.0;
-                           enum float MAX = 3.14;
-
-                           auto buf = appender!(ubyte[]);
-                           buf.putFloat(MIN);
-                           buf.putFloat(MAX);
-                           daveWriteBytes(dc, daveDB, db, start, 8, buf.data.ptr);
-
-                           break;
-                           +/
-               case "ru8":
-                              // read bytes
-                              const(int) err = daveReadBytes(dc, daveDB, db, start, len, null);
-                              for (int i = 0; i < len; ++i) {
-                                 writefln("db%s.%s 0x%x", db, i + start, dc.daveGetU8);
-                              }
-                              break;
+                  writefln("%(0x%x %)", buf);
+                  string s = buf.getNTString();
+                  writeln(s);
+                  break;
                case "ralarm":
-                              enum LEN = 16;
-                              ubyte[LEN] buffer;
-                              size_t[2] alert;
-                              const(int) err = daveReadBytes(dc, daveDB, db, start, LEN, buffer.ptr);
-                              ubyte[] buf = buffer.dup;
-                              writefln("%( 0x%x %)", buf);
+                  enum LEN = 16;
+                  ubyte[LEN] buffer;
+                  size_t[2] alert;
+                  const(int) err = daveReadBytes(dc, daveDB, db, start, LEN, buffer.ptr);
+                  ubyte[] buf = buffer.dup;
+                  writefln("%( 0x%x %)", buf);
 
-                              alert[0] = buf.read!(size_t, Endian.littleEndian);
-                              alert[1] = buf.read!(size_t, Endian.littleEndian);
-                              foreach (i; 0 .. LEN * 8) {
-                                 if (bt(alert.ptr, i)) {
-                                    writefln("alarm %s", i);
-                                 }
-                              }
-                              break;
-               case "wb":
-                              ubyte[] buf = valueList.toBytes();
-                              writefln("%(%s %)", buf);
-                              daveWriteBytes(dc, daveDB, db, start, buf.length.to!int, buf.ptr);
-                              break;
+                  alert[0] = buf.read!(size_t, Endian.littleEndian);
+                  alert[1] = buf.read!(size_t, Endian.littleEndian);
+                  foreach (i; 0 .. LEN * 8) {
+                     if (bt(alert.ptr, i)) {
+                        writefln("alarm %s", i);
+                     }
+                  }
+                  break;
+               case "wu8":
+                  ubyte[] buf = valueList.toBytes();
+                  writefln("%(%s %)", buf);
+                  daveWriteBytes(dc, daveDB, db, start, buf.length.to!int, buf.ptr);
+                  break;
                case "w16":
-                              // write short
-                              auto buf = appender!(ubyte[]);
-                              short[] data = valueList.toBuffer!(short);
-                              foreach (s; data) {
-                                 buf.put16(s);
-                              }
-                              daveWriteBytes(dc, daveDB, db, start, buf.data.length.to!int, buf.data.ptr);
-                              break;
-
+                  // write short
+                  auto buf = appender!(ubyte[]);
+                  short[] data = valueList.toBuffer!(short);
+                  foreach (s; data) {
+                     buf.put16(s);
+                  }
+                  daveWriteBytes(dc, daveDB, db, start, buf.data.length.to!int, buf.data.ptr);
+                  break;
+               case "wu32":
+                  // write int
+                  auto buf = appender!(ubyte[]);
+                  short[] data = valueList.toBuffer!(short);
+                  foreach (s; data) {
+                     buf.putu32(s);
+                  }
+                  dc.writeBytes(db, start, BYTES_PER_DINT, buf.data);
+                  break;
+               case "rloop":
+                  StopWatch sw;
+                  sw.start;
+                  while (sw.peek.total!"seconds" < duration) {
+                     dc.readBytes(db, start, BYTES_PER_DINT);
+                     writefln("%s : db%s.%s 0x%x", sw.peek.total!"seconds" , db, start, dc.daveGetU32);
+                  }
+                  break;
                default:
-                              writefln("%s invalid command", cmd);
+                  writefln("%s invalid command", cmd);
             }
          } catch(Exception e) {
             writeln(e);
@@ -242,27 +221,12 @@ void help() {
    writeln();
    writeln("CMD:");
    writeln("ru8:read `l` bytes as uint8");
-   writeln("\ts7cli --ip <ip> -d100 -s42 -cru7 -l6");
+   writeln("ru16:read `l` bytes as uint16");
    writeln("ru32:read `l` bytes as uint32");
-   writeln("wb: write bytes");
+   writeln("ru64:read `l` bytes as uint64");
+   writeln("f:read `l` bytes as float");
+   writeln("wu8: write bytes");
    writeln("\ts7cli --ip <ip> -d100 -s42 -cwb -b \"1 2 3\"");
-   writeln("wu16 write int as uint16");
-   writeln("\ts7cli --ip <ip> -d100 -s42 -cwu16 -b \"1 2 3\"");
-
-   writeln();
-   writeln("obsolete");
-   writeln("r7: read `len` short (2 bytes)");
-   writeln("1: read one short (2 bytes)");
-   writeln("2: read `len` int (4 bytes)");
-   writeln("3: read long (8 bytes)");
-   writeln("30: read long (8 bytes)");
-   writeln("4: read string (max 1024 bytes)");
-   writeln("5: read `len` float (4 bytes)");
-   writeln("50: write/read uint (4 bytes)");
-   writeln("60: write 2 float (4 bytes)");
-   writeln("7: read `len` bytes");
-   writeln("8: read `len` bytes and print bits");
-   writeln("9: write ushort");
-   writeln("\t read_int32_cli --ip<IP> -d<DB> -s<ADDR> -f<FUNC> -a<value>");
-
+   writeln("w16 write int as int16");
+   writeln("wu32 write int as uint32");
 }
