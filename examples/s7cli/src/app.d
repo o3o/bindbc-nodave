@@ -30,7 +30,6 @@ void main(string[] args) {
       writeln("VERSION: ", retVal);
       writeln("loaded : ", loadedNodaveVersion);
 
-
       string ip = "172.20.0.10";
       int db = 610;
       int start = 2;
@@ -68,6 +67,15 @@ void main(string[] args) {
             }
 
             switch (cmd) {
+               case "gu8":
+                  // read bytes
+                  ubyte[] buf;
+                  const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
+                  for (int i = 0; i < buf.length; ++i) {
+                     writefln("db%s.%s 0x%x", db, i + start, buf[i]);
+                  }
+                  break;
+
                case "ru8":
                   // read bytes
                   const(int) err = daveReadBytes(dc, daveDB, db, start, len, null);
@@ -182,9 +190,13 @@ void main(string[] args) {
                case "rloop":
                   StopWatch sw;
                   sw.start;
-                  while (sw.peek.total!"seconds" < duration) {
-                     dc.readBytes(db, start, BYTES_PER_DINT);
-                     writefln("%s : db%s.%s 0x%x", sw.peek.total!"seconds" , db, start, dc.daveGetU32);
+                  ulong c = 0;
+                  while (c < ulong.max) {
+                     if (sw.peek.total!"msecs" > 200) {
+                        dc.readBytes(db, start, BYTES_PER_FLOAT);
+                        writefln("%d : db%s.%s %f", ++c, db, start, dc.daveGetFloat);
+                        sw.reset;
+                     }
                   }
                   break;
                default:

@@ -5,6 +5,9 @@ module bindbc.nodave.bufferappender;
 
 import std.array : Appender, appender;
 
+/**
+ * This is a convenience alias for Appender.
+ */
 alias DaveBuffer = Appender!(ubyte[]);
 
 /**
@@ -13,7 +16,6 @@ alias DaveBuffer = Appender!(ubyte[]);
  * Params:
  *  app = Appender
  *  value = Byte to append
- *
  */
 DaveBuffer put8(DaveBuffer app, in ubyte value) {
    app.put(value);
@@ -43,7 +45,13 @@ unittest {
    assert(app.data == [10, 11, 12, 13]);
 }
 
+/**
+ * Inserts a signed short (16 bits) in to [DaveBuffer]
+ */
 alias put16 = putW!short;
+/**
+ * Inserts a unsigned short (16 bits) in to [DaveBuffer]
+ */
 alias putu16 = putW!ushort;
 /**
  * Converts word (16bit) `value` into bytes and appends it to the managed array.
@@ -111,10 +119,12 @@ unittest {
    assert(app.data == [0x07, 0x01]);
 }
 
-
+/**
+ * Inserts a unsigned int (32 bits) in to [DaveBuffer]
+ */
 alias put32 = putDW!int;
 /**
- * Converts uint `value` into bytes and appends it to the managed array.
+ * Inserts a signed int (32 bits) in to [DaveBuffer]
  */
 alias putu32 = putDW!uint;
 
