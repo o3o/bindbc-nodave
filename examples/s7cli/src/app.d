@@ -38,6 +38,7 @@ void main(string[] args) {
       int port = 102;
       long duration = 5; // in secondi
       string cmd = "";
+      string format = "x";
       string valueList = "";
 
       auto opt = getopt(args,
@@ -47,7 +48,8 @@ void main(string[] args) {
             "s", "Start address (default 2)", &start,
             "l", "Number of element (see cmd)", &len,
             "c", "Command", &cmd,
-            "i", "Loop durarion (s)", &duration,
+            "i", "Loop duration (s)", &duration,
+            "f", "Format: x exa, b binary, d decimal", &format,
             "b", "Buffer", &valueList
             );
       if (opt.helpWanted) {
@@ -65,6 +67,7 @@ void main(string[] args) {
                daveDisconnectPLC(dc);
                sock.close;
             }
+            string fmt = format == "x" ? "db%s.%s 0x%x" : format == "b" ? "db%s.%s 0b%b" : "db%s.%s %d";
 
             switch (cmd) {
                case "gu8":
@@ -72,7 +75,7 @@ void main(string[] args) {
                   ubyte[] buf;
                   const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
                   for (int i = 0; i < buf.length; ++i) {
-                     writefln("db%s.%s 0x%x", db, i + start, buf[i]);
+                     writefln(fmt, db, i + start, buf[i]);
                   }
                   break;
 
@@ -80,18 +83,25 @@ void main(string[] args) {
                   // read bytes
                   const(int) err = daveReadBytes(dc, daveDB, db, start, len, null);
                   for (int i = 0; i < len; ++i) {
-                     writefln("db%s.%s 0x%x", db, i + start, dc.daveGetU8);
+                     writefln(fmt, db, i + start, dc.daveGetU8);
                   }
                   break;
+               case "ru8at":
+                  dc.readBytes(db, start, len);
+                  for (int i = len - 1; i > -1; --i) {
+                     writefln(fmt, db, i + start, dc.daveGetU8At(i));
+                  }
+                  break;
+
                case "ru16":
                   // read len short (2 bytes)
                   dc.readBytes(db, start, len * BYTES_PER_INT);
                   for (int i = 0; i < len; ++i) {
-                     print(db, start + i * BYTES_PER_INT, dc.daveGetU16);
+                     writefln(fmt, db, start + i * BYTES_PER_INT, dc.daveGetU16);
                   }
                   break;
                case "ru16n":
-                  // legge un intero 16 nativavmente
+                  // legge un intero 16 nativamente
                   ubyte[2] buf;
                   const(int) err = daveReadBytes(dc, daveDB, db, start, 2 , buf.ptr);
                   writefln("%(0x%x %)", buf);
@@ -102,7 +112,7 @@ void main(string[] args) {
                   // read len integer (4 bytes)
                   const(int) err = daveReadBytes(dc, daveDB, db, start, len * BYTES_PER_DINT, null);
                   for (int i = 0; i < len; ++i) {
-                     print(db, start + i * BYTES_PER_DINT, dc.daveGetU32);
+                     writefln(fmt, db, start + i * BYTES_PER_DINT, dc.daveGetU32);
                   }
                   break;
                case "ru64":

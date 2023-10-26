@@ -33,6 +33,14 @@ __dub.sdl__
 ```
 dependency "bindbc-nodave" version="~>0.1.0"
 ```
+## Install libnodave
+```
+$ git clone git@github.com:netdata/libnodave.git
+$ cd libnodave
+$ make
+$ sudo make install
+```
+or use [install-libnodave.sh](install-libnodave.sh)
 
 ### The dynamic binding
 The dynamic binding requires no special configuration when using DUB to manage your project.
