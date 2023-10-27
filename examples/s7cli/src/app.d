@@ -74,6 +74,7 @@ void main(string[] args) {
                   // read bytes
                   ubyte[] buf;
                   const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
+                  writeln("len: ", buf.length);
                   for (int i = 0; i < buf.length; ++i) {
                      writefln(fmt, db, i + start, buf[i]);
                   }
@@ -148,10 +149,10 @@ void main(string[] args) {
                   break;
                case "rs1":
                   // read string
-                  ubyte[] buf; // NO, must be static array
+                  ubyte[] buf = new ubyte[](len);
                   const(int) err = daveReadBytes(dc, daveDB, db, start, len, buf.ptr);
                   assert(err == 0);
-                  assert(buf.length == 0);
+                  assert(buf.length > 0);
                   writefln("err %s buf.len %s", err, buf.length);
 
                   writefln("%(0x%x %)", buf);
